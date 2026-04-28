@@ -17,12 +17,18 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS src/Infrastructure/*.cpp src/Console/*.cpp)
+
+# Main application executable
+add_executable(pharmacy src/main.cpp ${SOURCE_FILES})
+target_link_libraries(pharmacy PRIVATE pharmacy_core)
+
 enable_testing()
 
 file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS tests/*.cpp)
 
 if(TEST_SOURCES)
-  add_executable(pharmacy_tests ${TEST_SOURCES})
+  add_executable(pharmacy_tests ${TEST_SOURCES} ${SOURCE_FILES})
   target_link_libraries(pharmacy_tests PRIVATE pharmacy_core GTest::gtest_main)
   include(GoogleTest)
   gtest_discover_tests(pharmacy_tests)

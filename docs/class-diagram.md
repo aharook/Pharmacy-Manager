@@ -4,91 +4,84 @@
 classDiagram
     direction LR
 
-
-    class PharmacyController {
-        +createOrder()
-        +sellProducts()
-    }
-
-    class InventoryService {
-        +findProduct(name)
-        +reserveItems(name, quantity)
-        +releaseItems(name, quantity)
-        +decreaseStock(name, quantity)
-    }
-
-    class OrderService {
-        +createOrder(items)
-        +calculateTotal(order)
-        +finalizeOrder(order)
-    }
-
     class Product {
         +name: string
         +packCount: int
         +price: double
     }
 
-    class Order {
-        +items: vector~OrderItem~
-        +total: double
-    }
-
     class OrderItem {
         +quantity: int
         +unitPrice: double
+        +getLineTotal()
     }
 
-    namespace StrategyPattern {
-        class DiscountCard {
-            +cardType: string
-            +discountStrategy: IDiscountStrategy
-        }
-
-        class IDiscountStrategy {
-            <<interface>>
-            +calculate(baseAmount)
-        }
-
-        class PercentageDiscountStrategy {
-            +calculate(baseAmount)
-        }
-
-        class FixedDiscountStrategy {
-            +calculate(baseAmount)
-        }
+    class Order {
+        +id: string
+        +items: vector~OrderItem~
+        +saleType: SaleType
+        +total: double
+        +addItem(item)
+        +calculateTotal()
     }
 
-    namespace RepositoryPattern {
-        class IInventoryRepository {
-            <<interface>>
-            +getByName(name)
-            +save(product)
-            +update(product)
-        }
-
-        class InMemoryInventoryRepository {
-            +getByName(name)
-            +save(product)
-            +update(product)
-        }
+    class Booking {
+        +orderId: string
+        +isMissed: bool
+        +markAsMissed()
+        +calculatePenalty(total)
     }
 
+    class SaleFactory {
+        +createSale(type)
+    }
 
-    PharmacyController --> InventoryService
-    PharmacyController --> OrderService
-    InventoryService --> IInventoryRepository
-    InMemoryInventoryRepository ..|> IInventoryRepository
-    OrderService --> Order
+    class Sale {
+        <<interface>>
+        +calculate(items)
+        +getType()
+    }
+
+    class DirectSale {
+        +calculate(items)
+    }
+
+    class BookingSale {
+        +calculate(items)
+    }
+
+    class OrderRepository {
+        <<interface>>
+        +save(order)
+        +getById(id)
+        +getAll()
+        +update(order)
+        +deleteById(id)
+    }
+
+    class FileOrderRepository {
+        +save(order)
+        +getById(id)
+        +getAll()
+        +update(order)
+        +deleteById(id)
+    }
+
+    class PharmacyConsole {
+        +run()
+    }
+
     Order *-- OrderItem
     OrderItem --> Product
-    DiscountCard --> IDiscountStrategy
-    PercentageDiscountStrategy ..|> IDiscountStrategy
-    FixedDiscountStrategy ..|> IDiscountStrategy
-    OrderService --> DiscountCard
-    InventoryService --> Product
+    Order --> SaleFactory
+    SaleFactory --> Sale
+    DirectSale ..|> Sale
+    BookingSale ..|> Sale
+    FileOrderRepository ..|> OrderRepository
+    PharmacyConsole --> FileOrderRepository
+    PharmacyConsole --> Booking
 ```
 
 ## Патерни
-- Strategy: `IDiscountStrategy` дозволяє додавати нові типи знижок без зміни сервісів.
-- Repository: `IInventoryRepository` відокремлює роботу зі складом від бізнес-логіки.
+- Factory: `SaleFactory` створює `DirectSale` або `BookingSale`.
+- Repository: `OrderRepository` абстрагує збереження замовлень, реалiзацiя у `FileOrderRepository`.

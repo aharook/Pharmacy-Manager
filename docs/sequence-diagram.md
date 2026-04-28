@@ -2,39 +2,27 @@
 
 ```mermaid
 sequenceDiagram
-    actor Cashier as Працівник
-    participant UI as ConsoleUI
-    participant Controller as PharmacyController
-    participant Inventory as InventoryService
-    participant Repo as IInventoryRepository
-    participant OrderService as OrderService
-    participant Discount as DiscountCard
-    participant Strategy as IDiscountStrategy
+    actor User as User
+    participant UI as PharmacyConsole
+    participant Order as Order
+    participant Factory as SaleFactory
+    participant Repo as FileOrderRepository
 
-    Cashier->>UI: Вибирає оформлення замовлення
-    UI->>Controller: createOrder(items, discountCard)
-    Controller->>Inventory: reserveItems(name, quantity)
-    Inventory->>Repo: getByName(name)
-    Repo-->>Inventory: Product
-    Inventory-->>Controller: items reserved
-    Controller->>OrderService: createOrder(items)
-    OrderService->>OrderService: calculateTotal(order)
-    OrderService->>Discount: getDiscountStrategy()
-    Discount->>Strategy: calculate(baseAmount)
-    Strategy-->>Discount: discountedAmount
-    Discount-->>OrderService: discountedAmount
-    OrderService-->>Controller: final order total
-    Controller->>Inventory: decreaseStock(name, quantity)
-    Inventory->>Repo: update(product)
-    Repo-->>Inventory: saved
-    Controller-->>UI: підтвердження продажу та сума
-    UI-->>Cashier: Показати чек
+    User->>UI: Create order (product, qty, sale type)
+    UI->>Order: addItem(product, qty)
+    UI->>Order: calculateTotal()
+    Order->>Factory: createSale(type)
+    Factory-->>Order: Sale
+    Order-->>UI: total
+    UI->>Repo: save(order)
+    Repo-->>UI: saved
+    UI-->>User: Show order ID and total
 ```
 
-## Сценарій
-Головний сценарій для першої ітерації: працівник створює замовлення або продаж, система перевіряє наявність препарату, списує кількість зі складу та рахує підсумкову суму з урахуванням дисконтної карти.
+## Сценарiй
+Користувач створює замовлення у консолi. Система рахує суму через Factory (DIRECT або BOOKING) i зберiгає замовлення у файловому репозиторiї.
 
-## Межі відповідальності
-- UI тільки збирає дані та показує результат.
-- Бізнес-логіка перевіряє склад, створює замовлення і рахує суму.
-- Інфраструктура зберігає та оновлює дані про препарати.
+## Межi вiдповiдальностi
+- Console збирає данi та показує результат.
+- Order рахує суму через SaleFactory.
+- FileOrderRepository зберiгає замовлення у файл.
