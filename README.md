@@ -74,5 +74,3 @@ cmake --build build
 - [Class Diagram](docs/class-diagram.md)
 - [Sequence Diagram](docs/sequence-diagram.md)
 
-## Лiцензiя
-MIT License
