@@ -1,4 +1,4 @@
-# Pharmacy Manager (Simplified)
+# Pharmacy Manager 
 
 Освiтнiй мiнi-проєкт для демонстрацiї патернiв Factory та Repository. Система керує товарами, замовленнями та бронюваннями з простим файловим збереженням.
 

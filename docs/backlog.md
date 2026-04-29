@@ -1,7 +1,7 @@
 # Backlog
 
 ## Поточний стан (Simplified) 
--  Спрощена доменна модель (Product, OrderItem, Order, Booking)
+-  доменна модель (Product, OrderItem, Order, Booking)
 -  Factory Pattern для розрахунку DIRECT / BOOKING продажiв
 -  Repository Pattern для збереження замовлень
 -  Файлове збереження у форматi `id|saleType|total`
@@ -19,4 +19,3 @@
 ## Можливi наступнi кроки (не в планi)
 - Додавання знижок або додаткових типiв продажу
 - Бiльш детальна аналітика по замовленнях
-- Інший спосiб збереження (SQLite)
