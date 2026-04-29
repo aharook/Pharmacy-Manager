@@ -1,4 +1,5 @@
 #include "BookingManager.h"
+#include "ConsoleUIHelper.h"
 
 #include <iostream>
 #include <iomanip>
@@ -18,7 +19,7 @@ void BookingManager::run() {
         std::cout << "0. Back" << std::endl;
         std::cout << "Choose option: ";
 
-        int choice = getUserChoice();
+        int choice = ConsoleUIHelper::getUserChoice();
 
         switch (choice) {
             case 1:
@@ -34,7 +35,7 @@ void BookingManager::run() {
                 inMenu = false;
                 break;
             default:
-                displayError("Invalid choice.");
+                ConsoleUIHelper::displayError("Invalid choice.");
         }
     }
 }
@@ -42,25 +43,23 @@ void BookingManager::run() {
 void BookingManager::createBooking() {
     std::cout << "\n--- Create Booking ---" << std::endl;
 
-    std::string orderId = getUserInput("Enter order ID: ");
+    std::string orderId = ConsoleUIHelper::getUserInput("Enter order ID: ");
 
-    // Call service (pure business logic)
     BookingResult result = bookingService_->createBooking(orderId);
 
     if (!result.success) {
-        displayError(result.message);
+        ConsoleUIHelper::displayError(result.message);
         return;
     }
 
-    // Display success from UI
-    displayMessage(result.message);
+    ConsoleUIHelper::displayMessage(result.message);
 }
 
 void BookingManager::viewBookings() {
     const auto& bookings = bookingService_->getAllBookings();
     
     if (bookings.empty()) {
-        displayMessage("No bookings.");
+        ConsoleUIHelper::displayMessage("No bookings.");
         return;
     }
 
@@ -75,43 +74,16 @@ void BookingManager::viewBookings() {
 }
 
 void BookingManager::markBookingAsMissed() {
-    std::string orderId = getUserInput("Enter booking ID: ");
+    std::string orderId = ConsoleUIHelper::getUserInput("Enter booking ID: ");
 
     double penaltyAmount = 0.0;
-    // Call service (pure business logic)
     BookingResult result = bookingService_->markBookingAsMissed(orderId, penaltyAmount);
 
     if (!result.success) {
-        displayError(result.message);
+        ConsoleUIHelper::displayError(result.message);
         return;
     }
 
-    // Display success from UI
     std::cout << "\n✓ " << result.message << std::endl;
     std::cout << "Penalty amount (20%): " << std::fixed << std::setprecision(2) << penaltyAmount << " USD" << std::endl;
-}
-
-int BookingManager::getUserChoice() {
-    std::string input;
-    std::getline(std::cin, input);
-    try {
-        return std::stoi(input);
-    } catch (...) {
-        return -1;
-    }
-}
-
-std::string BookingManager::getUserInput(const std::string& prompt) {
-    std::cout << prompt;
-    std::string input;
-    std::getline(std::cin, input);
-    return input;
-}
-
-void BookingManager::displayMessage(const std::string& msg) {
-    std::cout << "\n✓ " << msg << std::endl;
-}
-
-void BookingManager::displayError(const std::string& error) {
-    std::cout << "\n✗ Error: " << error << std::endl;
 }

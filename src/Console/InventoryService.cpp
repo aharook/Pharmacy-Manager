@@ -9,7 +9,6 @@ const std::vector<Product>& InventoryService::getAllProducts() const {
 }
 
 std::string InventoryService::addProduct(const std::string& name, int quantity, double price) {
-    // Validate inputs
     if (name.empty()) {
         return "Product name cannot be empty!";
     }

@@ -1,4 +1,5 @@
 #include "PharmacyConsole.h"
+#include "ConsoleUIHelper.h"
 
 #include <iostream>
 
@@ -20,7 +21,7 @@ void PharmacyConsole::run() {
         std::cout << "0. Exit" << std::endl;
         std::cout << "Choose option: ";
 
-        int choice = getUserChoice();
+        int choice = ConsoleUIHelper::getUserChoice();
 
         switch (choice) {
             case 1:
@@ -34,30 +35,10 @@ void PharmacyConsole::run() {
                 break;
             case 0:
                 isRunning = false;
-                displayMessage("\nThank you for using Pharmacy Manager!");
+                ConsoleUIHelper::displayMessage("\nThank you for using Pharmacy Manager!");
                 break;
             default:
-                displayError("Invalid choice.");
+                ConsoleUIHelper::displayError("Invalid choice.");
         }
     }
-}
-
-int PharmacyConsole::getUserChoice() {
-    std::string input;
-    std::getline(std::cin, input);
-    try {
-        return std::stoi(input);
-    } catch (...) {
-        return -1;
-    }
-}
-
-void PharmacyConsole::displayMessage(const std::string& msg) 
-{
-    std::cout << "\n✓ " << msg << std::endl;
-}
-
-void PharmacyConsole::displayError(const std::string& error) 
-{
-    std::cout << "\n✗ Error: " << error << std::endl;
 }

@@ -19,11 +19,6 @@ private:
     void createBooking();
     void viewBookings();
     void markBookingAsMissed();
-    
-    int getUserChoice();
-    std::string getUserInput(const std::string& prompt);
-    void displayMessage(const std::string& msg);
-    void displayError(const std::string& error);
 };
 
 #endif

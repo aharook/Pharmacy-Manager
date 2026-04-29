@@ -17,10 +17,6 @@ public:
 private:
     void viewProducts();
     void createProduct();
-    
-    std::string getUserInput(const std::string& prompt);
-    void displayMessage(const std::string& msg);
-    void displayError(const std::string& error);
 };
 
 #endif
