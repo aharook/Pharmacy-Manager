@@ -22,12 +22,17 @@ public:
     }
 
     void save(const Order& order) override;
+
     const Order& getById(const std::string& id) const override;
+
     std::vector<Order> getAll() const override;
+
     void update(const Order& order) override;
+
     void deleteById(const std::string& id) override;
 
     void saveToFile();
+    
     void loadFromFile();
 };
 

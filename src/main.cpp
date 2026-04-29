@@ -5,7 +5,7 @@
 int main() {
     try {
         FileOrderRepository orderRepository("pharmacy_orders.txt");
-        PharmacyConsole console(orderRepository);
+        PharmacyConsole console(orderRepository, "pharmacy_products.txt");
         console.run();
     } catch (const std::exception& e) {
         std::cerr << "Fatal error: " << e.what() << std::endl;

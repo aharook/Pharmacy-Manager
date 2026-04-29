@@ -1,0 +1,6 @@
+Aspirin|50|5.0
+Vitamin C|30|3.5
+Ibuprofen|25|4.0
+Paracetamol|40|4.5
+Analgin|40|4.5
+Doctrin|40|4.5

@@ -2,42 +2,29 @@
 #define CONSOLE_PHARMACY_CONSOLE_H
 
 #include <string>
-#include <vector>
+#include <memory>
 
-#include "../Domain/Booking.h"
-#include "../Domain/Order.h"
-#include "../Domain/Product.h"
+#include "InventoryManager.h"
+#include "OrderManager.h"
+#include "BookingManager.h"
 #include "../Infrastructure/FileOrderRepository.h"
 
 class PharmacyConsole {
 private:
-    std::vector<Product> products_;
-    FileOrderRepository& orderRepository_;
-    std::vector<Booking> bookings_;
+    std::unique_ptr<InventoryManager> inventoryManager_;
+    std::unique_ptr<OrderManager> orderManager_;
+    std::unique_ptr<BookingManager> bookingManager_;
+    
+    int getUserChoice();
+    void displayMessage(const std::string& msg);
+    void displayError(const std::string& error);
 
 public:
-    explicit PharmacyConsole(FileOrderRepository& orderRepository);
+    explicit PharmacyConsole(FileOrderRepository& orderRepository, const std::string& productsFilePath = "pharmacy_products.txt");
 
     void run();
 
-private:
-    void showMainMenu();
-    void showInventoryMenu();
-    void showOrderMenu();
-    void showBookingMenu();
 
-    void viewProducts();
-    void createOrder();
-    void viewOrders();
-
-    void createBooking();
-    void viewBookings();
-    void markBookingAsMissed();
-
-    int getUserChoice();
-    std::string getUserInput(const std::string& prompt);
-    void displayMessage(const std::string& msg);
-    void displayError(const std::string& error);
 };
 
 #endif

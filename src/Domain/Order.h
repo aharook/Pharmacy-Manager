@@ -18,7 +18,7 @@ private:
 public:
     Order() : id_(""), total_(0.0), saleType_(SaleType::DIRECT) {}
 
-    Order(std::string id, SaleType saleType): id_(std::move(id)), total_(0.0), saleType_(saleType) {}
+    Order(std::string id, SaleType saleType) : id_(std::move(id)), total_(0.0), saleType_(saleType) {}
 
     const std::string& getId() const { return id_; }
 
@@ -38,9 +38,7 @@ public:
         total_ = total;
     }
 
-    SaleType getSaleType() const {
-        return saleType_;
-    }
+    SaleType getSaleType() const {return saleType_;}
 
     void calculateTotal() {
         Sale* sale = SaleFactory::createSale(saleType_);
