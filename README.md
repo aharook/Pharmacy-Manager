@@ -10,6 +10,10 @@
 
 ## Архiтектура
 ```
+Aplication
+├── BoockingService
+├── InventoryService
+└── OrderService
 Domain
 ├── Product, OrderItem, Order
 ├── Booking
@@ -17,9 +21,13 @@ Domain
 └── OrderRepository (contract)
 
 Infrastructure
-└── FileOrderRepository (Repository Pattern, file-based)
+├── FileOrderRepository 
+├── FileProductRepository
 
 Console
+├── BookingManager
+├── InventoryManager
+├── OrderManager
 └── PharmacyConsole
 
 Entry Point
@@ -58,14 +66,7 @@ cmake --build build
 1. Бронювання може бути позначене як пропущене.
 2. Якщо пропущено, застосовується штраф 20% (сума * 0.8).
 
-## Тести
-У проєктi 12 юнiт-тестiв:
-- Product (2)
-- OrderItem (1)
-- SaleFactory (4)
-- Order (1)
-- Booking (1)
-- FileOrderRepository (3)
+
 
 ## Документацiя
 - [Vision](docs/vision.md)
@@ -73,4 +74,8 @@ cmake --build build
 - [Iteration 2](docs/iteration-2.md)
 - [Class Diagram](docs/class-diagram.md)
 - [Sequence Diagram](docs/sequence-diagram.md)
+- [Iteration 3](docs/iteration-3.md)
+- [TESTING](docs/TESTING.md)
+- [test-matrix](docs/test-matrix)
+- [test-strategy](docs/test-strategy)
 
