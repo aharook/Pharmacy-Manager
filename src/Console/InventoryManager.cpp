@@ -1,5 +1,4 @@
 #include "InventoryManager.h"
-#include "ConsoleUIHelper.h"
 
 #include <iostream>
 #include <iomanip>
@@ -18,20 +17,27 @@ void InventoryManager::run() {
         std::cout << "0. Back" << std::endl;
         std::cout << "Choose option: ";
 
-        int choice = ConsoleUIHelper::getUserChoice();
-
-        switch (choice) {
-            case 1:
-                viewProducts();
-                break;
-            case 2:
-                createProduct();
-                break;
-            case 0:
-                inMenu = false;
-                break;
-            default:
-                ConsoleUIHelper::displayError("Invalid choice.");
+        std::string input;
+        std::getline(std::cin, input);
+        
+        try {
+            int choice = std::stoi(input);
+            
+            switch (choice) {
+                case 1:
+                    viewProducts();
+                    break;
+                case 2:
+                    createProduct();
+                    break;
+                case 0:
+                    inMenu = false;
+                    break;
+                default:
+                    displayError("Invalid choice.");
+            }
+        } catch (...) {
+            displayError("Invalid input.");
         }
     }
 }
@@ -46,7 +52,7 @@ void InventoryManager::viewProducts() {
     const auto& products = inventoryService_->getAllProducts();
     
     if (products.empty()) {
-        ConsoleUIHelper::displayMessage("No products available.");
+        displayMessage("No products available.");
         return;
     }
 
@@ -61,9 +67,9 @@ void InventoryManager::viewProducts() {
 void InventoryManager::createProduct() {
     std::cout << "\n--- Create New Product ---" << std::endl;
 
-    std::string name = ConsoleUIHelper::getUserInput("Enter product name: ");
-    std::string quantityStr = ConsoleUIHelper::getUserInput("Enter quantity: ");
-    std::string priceStr = ConsoleUIHelper::getUserInput("Enter price: ");
+    std::string name = getUserInput("Enter product name: ");
+    std::string quantityStr = getUserInput("Enter quantity: ");
+    std::string priceStr = getUserInput("Enter price: ");
 
     try {
         int quantity = std::stoi(quantityStr);
@@ -78,7 +84,7 @@ void InventoryManager::createProduct() {
     } catch (const std::invalid_argument& e) {
         displayError(e.what());
     } catch (const std::exception& e) {
-        ConsoleUIHelper::displayError(std::string("Invalid input: ") + e.what());
+        displayError(std::string("Invalid input: ") + e.what());
     }
 }
 

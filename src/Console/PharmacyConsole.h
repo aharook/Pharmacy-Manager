@@ -14,11 +14,17 @@ private:
     std::unique_ptr<InventoryManager> inventoryManager_;
     std::unique_ptr<OrderManager> orderManager_;
     std::unique_ptr<BookingManager> bookingManager_;
+    
+    int getUserChoice();
+    void displayMessage(const std::string& msg);
+    void displayError(const std::string& error);
 
 public:
     explicit PharmacyConsole(FileOrderRepository& orderRepository, const std::string& productsFilePath = "pharmacy_products.txt");
 
     void run();
+
+
 };
 
 #endif

@@ -1,5 +1,4 @@
 #include "BookingManager.h"
-#include "ConsoleUIHelper.h"
 
 #include <iostream>
 #include <iomanip>
@@ -19,7 +18,7 @@ void BookingManager::run() {
         std::cout << "0. Back" << std::endl;
         std::cout << "Choose option: ";
 
-        int choice = ConsoleUIHelper::getUserChoice();
+        int choice = getUserChoice();
 
         switch (choice) {
             case 1:
@@ -35,7 +34,7 @@ void BookingManager::run() {
                 inMenu = false;
                 break;
             default:
-                ConsoleUIHelper::displayError("Invalid choice.");
+                displayError("Invalid choice.");
         }
     }
 }
@@ -43,7 +42,7 @@ void BookingManager::run() {
 void BookingManager::createBooking() {
     std::cout << "\n--- Create Booking ---" << std::endl;
 
-    std::string orderId = ConsoleUIHelper::getUserInput("Enter order ID: ");
+    std::string orderId = getUserInput("Enter order ID: ");
 
     try {
         bookingService_->createBooking(orderId);
@@ -61,7 +60,7 @@ void BookingManager::viewBookings() {
     const auto& bookings = bookingService_->getAllBookings();
     
     if (bookings.empty()) {
-        ConsoleUIHelper::displayMessage("No bookings.");
+        displayMessage("No bookings.");
         return;
     }
 
@@ -76,7 +75,7 @@ void BookingManager::viewBookings() {
 }
 
 void BookingManager::markBookingAsMissed() {
-    std::string orderId = ConsoleUIHelper::getUserInput("Enter booking ID: ");
+    std::string orderId = getUserInput("Enter booking ID: ");
 
     try {
         BookingResult result = bookingService_->markBookingAsMissed(orderId);
