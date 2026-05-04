@@ -1,5 +1,5 @@
-#ifndef CONSOLE_INVENTORY_SERVICE_H
-#define CONSOLE_INVENTORY_SERVICE_H
+#ifndef APPLICATION_INVENTORY_SERVICE_H
+#define APPLICATION_INVENTORY_SERVICE_H
 
 #include <memory>
 #include <string>
@@ -16,11 +16,10 @@ public:
 
     const std::vector<Product>& getAllProducts() const;
 
-    std::string addProduct(const std::string& name, int quantity, double price);
+    void addProduct(const std::string& name, int quantity, double price);
 
     Product* findProductByName(const std::string& name);
     const Product* findProductByName(const std::string& name) const;
-
 
     void updateProduct(const Product& product);
 };

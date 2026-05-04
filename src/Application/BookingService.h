@@ -1,5 +1,5 @@
-#ifndef CONSOLE_BOOKING_SERVICE_H
-#define CONSOLE_BOOKING_SERVICE_H
+#ifndef APPLICATION_BOOKING_SERVICE_H
+#define APPLICATION_BOOKING_SERVICE_H
 
 #include <string>
 #include <vector>
@@ -7,8 +7,7 @@
 #include "../Infrastructure/FileOrderRepository.h"
 
 struct BookingResult {
-    bool success;
-    std::string message;
+    double penaltyAmount;
 };
 
 class BookingService {
@@ -19,12 +18,11 @@ private:
 public:
     explicit BookingService(FileOrderRepository& orderRepository);
 
-
-    BookingResult createBooking(const std::string& orderId);
+    void createBooking(const std::string& orderId);
 
     const std::vector<Booking>& getAllBookings() const;
 
-    BookingResult markBookingAsMissed(const std::string& orderId, double& penaltyAmount);
+    BookingResult markBookingAsMissed(const std::string& orderId);
 };
 
 #endif

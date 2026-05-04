@@ -1,5 +1,5 @@
-#ifndef CONSOLE_ORDER_SERVICE_H
-#define CONSOLE_ORDER_SERVICE_H
+#ifndef APPLICATION_ORDER_SERVICE_H
+#define APPLICATION_ORDER_SERVICE_H
 
 #include <memory>
 #include <string>
@@ -10,8 +10,6 @@
 #include "../Infrastructure/FileProductRepository.h"
 
 struct OrderResult {
-    bool success;
-    std::string message;
     std::string orderId;
     double total;
 };
@@ -25,10 +23,8 @@ public:
     OrderService(FileOrderRepository& orderRepository, 
                  const std::string& productsFilePath = "pharmacy_products.txt");
 
-    // Create order - returns OrderResult with success/error info
     OrderResult createOrder(const std::string& productName, int quantity, int saleType);
 
-    // Get all orders
     std::vector<Order> getAllOrders() const;
 };
 

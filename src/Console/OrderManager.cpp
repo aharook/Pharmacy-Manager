@@ -46,18 +46,15 @@ void OrderManager::createOrder() {
         int quantity = std::stoi(quantityStr);
         int saleType = std::stoi(saleTypeStr);
 
-        // Call service (pure business logic)
         OrderResult result = orderService_->createOrder(productName, quantity, saleType);
 
-        if (!result.success) {
-            displayError(result.message);
-            return;
-        }
-
-        // Display success from UI
-        std::cout << "\n✓ Order created successfully!" << std::endl;
+        std::cout << "\n Order created successfully!" << std::endl;
         std::cout << "ID: " << result.orderId << std::endl;
         std::cout << "Total: " << std::fixed << std::setprecision(2) << result.total << " USD" << std::endl;
+    } catch (const std::invalid_argument& e) {
+        displayError(e.what());
+    } catch (const std::runtime_error& e) {
+        displayError(e.what());
     } catch (const std::exception& e) {
         displayError(std::string("Invalid input: ") + e.what());
     }
@@ -104,9 +101,9 @@ std::string OrderManager::getUserInput(const std::string& prompt) {
 }
 
 void OrderManager::displayMessage(const std::string& msg) {
-    std::cout << "\n✓ " << msg << std::endl;
+    std::cout << "\nsuccess: " << msg << std::endl;
 }
 
 void OrderManager::displayError(const std::string& error) {
-    std::cout << "\n✗ Error: " << error << std::endl;
+    std::cout << "\n Error: " << error << std::endl;
 }

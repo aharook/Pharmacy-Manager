@@ -54,10 +54,10 @@ int PharmacyConsole::getUserChoice() {
 
 void PharmacyConsole::displayMessage(const std::string& msg) 
 {
-    std::cout << "\n✓ " << msg << std::endl;
+    std::cout << "\nsuccess: " << msg << std::endl;
 }
 
 void PharmacyConsole::displayError(const std::string& error) 
 {
-    std::cout << "\n✗ Error: " << error << std::endl;
+    std::cout << "\n Error: " << error << std::endl;
 }

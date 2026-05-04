@@ -44,16 +44,16 @@ void BookingManager::createBooking() {
 
     std::string orderId = getUserInput("Enter order ID: ");
 
-    // Call service (pure business logic)
-    BookingResult result = bookingService_->createBooking(orderId);
-
-    if (!result.success) {
-        displayError(result.message);
-        return;
+    try {
+        bookingService_->createBooking(orderId);
+        displayMessage("Booking created for order: " + orderId);
+    } catch (const std::invalid_argument& e) {
+        displayError(e.what());
+    } catch (const std::runtime_error& e) {
+        displayError(e.what());
+    } catch (const std::exception& e) {
+        displayError(std::string("Error: ") + e.what());
     }
-
-    // Display success from UI
-    displayMessage(result.message);
 }
 
 void BookingManager::viewBookings() {
@@ -77,18 +77,17 @@ void BookingManager::viewBookings() {
 void BookingManager::markBookingAsMissed() {
     std::string orderId = getUserInput("Enter booking ID: ");
 
-    double penaltyAmount = 0.0;
-    // Call service (pure business logic)
-    BookingResult result = bookingService_->markBookingAsMissed(orderId, penaltyAmount);
-
-    if (!result.success) {
-        displayError(result.message);
-        return;
+    try {
+        BookingResult result = bookingService_->markBookingAsMissed(orderId);
+        std::cout << "\n Booking marked as missed!" << std::endl;
+        std::cout << "Penalty amount (20%): " << std::fixed << std::setprecision(2) << result.penaltyAmount << " USD" << std::endl;
+    } catch (const std::invalid_argument& e) {
+        displayError(e.what());
+    } catch (const std::runtime_error& e) {
+        displayError(e.what());
+    } catch (const std::exception& e) {
+        displayError(std::string("Error: ") + e.what());
     }
-
-    // Display success from UI
-    std::cout << "\n✓ " << result.message << std::endl;
-    std::cout << "Penalty amount (20%): " << std::fixed << std::setprecision(2) << penaltyAmount << " USD" << std::endl;
 }
 
 int BookingManager::getUserChoice() {
@@ -109,9 +108,9 @@ std::string BookingManager::getUserInput(const std::string& prompt) {
 }
 
 void BookingManager::displayMessage(const std::string& msg) {
-    std::cout << "\n✓ " << msg << std::endl;
+    std::cout << "\nsuccess: " << msg << std::endl;
 }
 
 void BookingManager::displayError(const std::string& error) {
-    std::cout << "\n✗ Error: " << error << std::endl;
+    std::cout << "\n Error: " << error << std::endl;
 }

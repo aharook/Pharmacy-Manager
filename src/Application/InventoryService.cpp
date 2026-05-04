@@ -1,4 +1,5 @@
 #include "InventoryService.h"
+#include <stdexcept>
 
 InventoryService::InventoryService(const std::string& productsFilePath) {
     productRepository_ = std::make_unique<FileProductRepository>(productsFilePath);
@@ -8,31 +9,25 @@ const std::vector<Product>& InventoryService::getAllProducts() const {
     return productRepository_->getAll();
 }
 
-std::string InventoryService::addProduct(const std::string& name, int quantity, double price) {
-    // Validate inputs
+void InventoryService::addProduct(const std::string& name, int quantity, double price) {
     if (name.empty()) {
-        return "Product name cannot be empty!";
+        throw std::invalid_argument("Product name cannot be empty!");
     }
 
     if (productRepository_->findByName(name) != nullptr) {
-        return "Product with this name already exists!";
+        throw std::invalid_argument("Product with this name already exists!");
     }
 
     if (quantity < 0) {
-        return "Quantity must be non-negative!";
+        throw std::invalid_argument("Quantity must be non-negative!");
     }
 
     if (price < 0) {
-        return "Price must be non-negative!";
+        throw std::invalid_argument("Price must be non-negative!");
     }
 
-    try {
-        Product newProduct(name, quantity, price);
-        productRepository_->save(newProduct);
-        return "";  // Empty string = success
-    } catch (const std::exception& e) {
-        return std::string("Error: ") + e.what();
-    }
+    Product newProduct(name, quantity, price);
+    productRepository_->save(newProduct);
 }
 
 Product* InventoryService::findProductByName(const std::string& name) {

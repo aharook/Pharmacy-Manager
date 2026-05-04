@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <string>
-#include "InventoryService.h"
+#include "../Application/InventoryService.h"
 
 class InventoryManager {
 private:
