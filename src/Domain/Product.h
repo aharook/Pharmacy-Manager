@@ -24,17 +24,11 @@ public:
         }
     }
 
-    const std::string& getName() const {
-        return name_;
-    }
+    const std::string& getName() const {return name_;}
 
-    int getPackCount() const {
-        return packCount_;
-    }
+    int getPackCount() const {return packCount_;}
 
-    double getPrice() const {
-        return price_;
-    }
+    double getPrice() const {return price_;}
 
     void decreasePackCount(int quantity) {
         if (quantity < 0) {

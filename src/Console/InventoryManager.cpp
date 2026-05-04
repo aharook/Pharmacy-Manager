@@ -68,17 +68,31 @@ void InventoryManager::createProduct() {
     try {
         int quantity = std::stoi(quantityStr);
         double price = std::stod(priceStr);
-        std::string error = inventoryService_->addProduct(name, quantity, price);
+        
+        inventoryService_->addProduct(name, quantity, price);
 
-        if (!error.empty()) {
-            ConsoleUIHelper::displayError(error);
-            return;
-        }
-        std::cout << "\n✓ Product created successfully!" << std::endl;
+        std::cout << "\n Product created successfully!" << std::endl;
         std::cout << "Name: " << name << std::endl;
         std::cout << "Quantity: " << quantity << std::endl;
         std::cout << "Price: " << std::fixed << std::setprecision(2) << price << " USD" << std::endl;
+    } catch (const std::invalid_argument& e) {
+        displayError(e.what());
     } catch (const std::exception& e) {
         ConsoleUIHelper::displayError(std::string("Invalid input: ") + e.what());
     }
+}
+
+std::string InventoryManager::getUserInput(const std::string& prompt) {
+    std::cout << prompt;
+    std::string input;
+    std::getline(std::cin, input);
+    return input;
+}
+
+void InventoryManager::displayMessage(const std::string& msg) {
+    std::cout << "\nsuccess: " << msg << std::endl;
+}
+
+void InventoryManager::displayError(const std::string& error) {
+    std::cout << "\n Error: " << error << std::endl;
 }

@@ -4,4 +4,4 @@ Ibuprofen|25|4
 Paracetamol|40|4.5
 Analgin|40|4.5
 Doctrin|40|4.5
-Analgin2.0|70|8
+Nemasyl|69|42.5

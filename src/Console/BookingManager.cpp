@@ -45,14 +45,16 @@ void BookingManager::createBooking() {
 
     std::string orderId = ConsoleUIHelper::getUserInput("Enter order ID: ");
 
-    BookingResult result = bookingService_->createBooking(orderId);
-
-    if (!result.success) {
-        ConsoleUIHelper::displayError(result.message);
-        return;
+    try {
+        bookingService_->createBooking(orderId);
+        displayMessage("Booking created for order: " + orderId);
+    } catch (const std::invalid_argument& e) {
+        displayError(e.what());
+    } catch (const std::runtime_error& e) {
+        displayError(e.what());
+    } catch (const std::exception& e) {
+        displayError(std::string("Error: ") + e.what());
     }
-
-    ConsoleUIHelper::displayMessage(result.message);
 }
 
 void BookingManager::viewBookings() {
@@ -76,14 +78,40 @@ void BookingManager::viewBookings() {
 void BookingManager::markBookingAsMissed() {
     std::string orderId = ConsoleUIHelper::getUserInput("Enter booking ID: ");
 
-    double penaltyAmount = 0.0;
-    BookingResult result = bookingService_->markBookingAsMissed(orderId, penaltyAmount);
-
-    if (!result.success) {
-        ConsoleUIHelper::displayError(result.message);
-        return;
+    try {
+        BookingResult result = bookingService_->markBookingAsMissed(orderId);
+        std::cout << "\n Booking marked as missed!" << std::endl;
+        std::cout << "Penalty amount (20%): " << std::fixed << std::setprecision(2) << result.penaltyAmount << " USD" << std::endl;
+    } catch (const std::invalid_argument& e) {
+        displayError(e.what());
+    } catch (const std::runtime_error& e) {
+        displayError(e.what());
+    } catch (const std::exception& e) {
+        displayError(std::string("Error: ") + e.what());
     }
+}
 
-    std::cout << "\n✓ " << result.message << std::endl;
-    std::cout << "Penalty amount (20%): " << std::fixed << std::setprecision(2) << penaltyAmount << " USD" << std::endl;
+int BookingManager::getUserChoice() {
+    std::string input;
+    std::getline(std::cin, input);
+    try {
+        return std::stoi(input);
+    } catch (...) {
+        return -1;
+    }
+}
+
+std::string BookingManager::getUserInput(const std::string& prompt) {
+    std::cout << prompt;
+    std::string input;
+    std::getline(std::cin, input);
+    return input;
+}
+
+void BookingManager::displayMessage(const std::string& msg) {
+    std::cout << "\nsuccess: " << msg << std::endl;
+}
+
+void BookingManager::displayError(const std::string& error) {
+    std::cout << "\n Error: " << error << std::endl;
 }

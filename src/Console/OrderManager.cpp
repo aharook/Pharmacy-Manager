@@ -49,14 +49,13 @@ void OrderManager::createOrder() {
 
         OrderResult result = orderService_->createOrder(productName, quantity, saleType);
 
-        if (!result.success) {
-            ConsoleUIHelper::displayError(result.message);
-            return;
-        }
-
-        std::cout << "\n✓ Order created successfully!" << std::endl;
+        std::cout << "\n Order created successfully!" << std::endl;
         std::cout << "ID: " << result.orderId << std::endl;
         std::cout << "Total: " << std::fixed << std::setprecision(2) << result.total << " USD" << std::endl;
+    } catch (const std::invalid_argument& e) {
+        displayError(e.what());
+    } catch (const std::runtime_error& e) {
+        displayError(e.what());
     } catch (const std::exception& e) {
         ConsoleUIHelper::displayError(std::string("Invalid input: ") + e.what());
     }
@@ -83,4 +82,29 @@ void OrderManager::viewOrders() {
                   << std::setw(15) << std::fixed << std::setprecision(2) 
                   << order.getTotal() << std::endl;
     }
+}
+
+int OrderManager::getUserChoice() {
+    std::string input;
+    std::getline(std::cin, input);
+    try {
+        return std::stoi(input);
+    } catch (...) {
+        return -1;
+    }
+}
+
+std::string OrderManager::getUserInput(const std::string& prompt) {
+    std::cout << prompt;
+    std::string input;
+    std::getline(std::cin, input);
+    return input;
+}
+
+void OrderManager::displayMessage(const std::string& msg) {
+    std::cout << "\nsuccess: " << msg << std::endl;
+}
+
+void OrderManager::displayError(const std::string& error) {
+    std::cout << "\n Error: " << error << std::endl;
 }

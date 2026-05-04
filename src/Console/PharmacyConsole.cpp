@@ -38,7 +38,27 @@ void PharmacyConsole::run() {
                 ConsoleUIHelper::displayMessage("\nThank you for using Pharmacy Manager!");
                 break;
             default:
-                ConsoleUIHelper::displayError("Invalid choice.");
+                displayError("Invalid choice.");
         }
     }
+}
+
+int PharmacyConsole::getUserChoice() {
+    std::string input;
+    std::getline(std::cin, input);
+    try {
+        return std::stoi(input);
+    } catch (...) {
+        return -1;
+    }
+}
+
+void PharmacyConsole::displayMessage(const std::string& msg) 
+{
+    std::cout << "\nsuccess: " << msg << std::endl;
+}
+
+void PharmacyConsole::displayError(const std::string& error) 
+{
+    std::cout << "\n Error: " << error << std::endl;
 }
