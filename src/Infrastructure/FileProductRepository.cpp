@@ -3,10 +3,21 @@
 #include <sstream>
 #include <algorithm>
 
+FileProductRepository::FileProductRepository(const std::string& filePath)
+    : filePath_(filePath),
+      serializer_(std::make_unique<ProductSerializer>()),
+      deserializer_(std::make_unique<ProductDeserializer>()) {
+    loadFromFile();
+}
+
+FileProductRepository::~FileProductRepository() {
+    saveToFile();
+}
+
 void FileProductRepository::save(const Product& product) {
     auto it = std::find_if(cache_.begin(), cache_.end(),
         [&product](const Product& p) { return p.getName() == product.getName(); });
-    
+
     if (it != cache_.end()) {
         *it = product;
     } else {
@@ -44,9 +55,7 @@ void FileProductRepository::saveToFile() {
     }
 
     for (const auto& product : cache_) {
-        file << product.getName() << "|" 
-             << product.getPackCount() << "|" 
-             << product.getPrice() << "\n";
+        file << serializer_->serialize(product) << "\n";
     }
     file.close();
 }
@@ -60,21 +69,12 @@ void FileProductRepository::loadFromFile() {
     std::string line;
     while (std::getline(file, line)) {
         if (line.empty()) continue;
-        
-        std::stringstream ss(line);
-        std::string name, packCountStr, priceStr;
-        
-        if (std::getline(ss, name, '|') && 
-            std::getline(ss, packCountStr, '|') && 
-            std::getline(ss, priceStr, '|')) {
-            
-            try {
-                int packCount = std::stoi(packCountStr);
-                double price = std::stod(priceStr);
-                cache_.emplace_back(name, packCount, price);
-            } catch (...) {
-                continue;
-            }
+
+        try {
+            Product product = deserializer_->deserialize(line);
+            cache_.push_back(product);
+        } catch (...) {
+            continue;
         }
     }
     file.close();

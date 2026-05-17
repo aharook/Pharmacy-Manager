@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "../Domain/Booking.h"
-#include "../Infrastructure/FileOrderRepository.h"
+#include "../Domain/OrderRepository.h"
 
 struct BookingResult {
     double penaltyAmount;
@@ -12,11 +12,11 @@ struct BookingResult {
 
 class BookingService {
 private:
-    FileOrderRepository& orderRepository_;
+    IOrderRepository& orderRepository_;
     std::vector<Booking> bookings_;
 
 public:
-    explicit BookingService(FileOrderRepository& orderRepository);
+    explicit BookingService(IOrderRepository& orderRepository);
 
     void createBooking(const std::string& orderId);
 

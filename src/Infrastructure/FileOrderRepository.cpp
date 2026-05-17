@@ -1,7 +1,17 @@
 #include "FileOrderRepository.h"
-
 #include <fstream>
 #include <sstream>
+
+FileOrderRepository::FileOrderRepository(const std::string& filePath)
+    : filePath_(filePath),
+      serializer_(std::make_unique<OrderSerializer>()),
+      deserializer_(std::make_unique<OrderDeserializer>()) {
+    loadFromFile();
+}
+
+FileOrderRepository::~FileOrderRepository() {
+    saveToFile();
+}
 
 void FileOrderRepository::save(const Order& order) {
     cache_[order.getId()] = order;
@@ -41,8 +51,7 @@ void FileOrderRepository::saveToFile() {
     }
 
     for (const auto& [id, order] : cache_) {
-        file << id << "|" << static_cast<int>(order.getSaleType()) << "|" 
-             << order.getTotal() << "\n";
+        file << serializer_->serialize(order) << "\n";
     }
     file.close();
 }
@@ -56,21 +65,12 @@ void FileOrderRepository::loadFromFile() {
     std::string line;
     while (std::getline(file, line)) {
         if (line.empty()) continue;
-        
-        std::stringstream ss(line);
-        std::string id, saleTypeStr, totalStr;
-        
-        if (std::getline(ss, id, '|') && 
-            std::getline(ss, saleTypeStr, '|') && 
-            std::getline(ss, totalStr, '|')) {
-            
-            int saleTypeInt = std::stoi(saleTypeStr);
-            double total = std::stod(totalStr);
-            
-            SaleType saleType = (saleTypeInt == 0) ? SaleType::DIRECT : SaleType::BOOKING;
-            Order order(id, saleType);
-            order.setTotal(total);
-            cache_[id] = order;
+
+        try {
+            Order order = deserializer_->deserialize(line);
+            cache_[order.getId()] = order;
+        } catch (...) {
+            continue;
         }
     }
     file.close();

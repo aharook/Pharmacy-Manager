@@ -6,7 +6,11 @@
 #include <vector>
 
 #include "OrderItem.h"
-#include "SaleFactory.h"
+
+enum class SaleType {
+    DIRECT,   
+    BOOKING  
+};
 
 class Order {
 private:
@@ -14,11 +18,13 @@ private:
     std::vector<OrderItem> items_;
     double total_;
     SaleType saleType_;
+    bool isReceived_;
 
 public:
-    Order() : id_(""), total_(0.0), saleType_(SaleType::DIRECT) {}
+    Order() : id_(""), total_(0.0), saleType_(SaleType::DIRECT), isReceived_(false) {}
 
-    Order(std::string id, SaleType saleType) : id_(std::move(id)), total_(0.0), saleType_(saleType) {}
+    Order(std::string id, SaleType saleType) 
+        : id_(std::move(id)), total_(0.0), saleType_(saleType), isReceived_(false) {}
 
     const std::string& getId() const { return id_; }
 
@@ -38,13 +44,11 @@ public:
         total_ = total;
     }
 
-    SaleType getSaleType() const {return saleType_;}
+    SaleType getSaleType() const { return saleType_; }
 
-    void calculateTotal() {
-        Sale* sale = SaleFactory::createSale(saleType_);
-        total_ = sale->calculate(items_);
-        delete sale;
-    }
+    bool isReceived() const { return isReceived_; }
+
+    void markAsReceived() { isReceived_ = true; }
 };
 
 #endif

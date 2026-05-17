@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-#include "Domain/Booking.h"
+#include "Calculations/BookingCalculation.h"
 #include "Domain/Order.h"
 #include "Domain/OrderItem.h"
 #include "Domain/Product.h"
-#include "Domain/SaleFactory.h"
+#include "Calculations/SaleFactory.h"
 
 TEST(ProductLogicTests, CreateProductWithValidData) {
     Product product("Aspirin", 10, 5.0);
@@ -58,17 +58,16 @@ TEST(OrderLogicTests, CreateOrderAndCalculateTotal) {
     order.addItem(OrderItem(product1, 5));
     order.addItem(OrderItem(product2, 2));
 
-    order.calculateTotal();
+    std::unique_ptr<Sale> sale(SaleFactory::createSale(SaleType::DIRECT));
+    order.setTotal(sale->calculate(order.getItems()));
 
     EXPECT_DOUBLE_EQ(order.getTotal(), 16.0);
 }
 
 TEST(BookingLogicTests, MissedBookingPenalty) {
-    Booking booking("ORD001", false);
     double originalTotal = 100.0;
 
-    EXPECT_DOUBLE_EQ(booking.calculatePenalty(originalTotal), 100.0);
+    EXPECT_DOUBLE_EQ(BookingCalculation::calculatePenalty(originalTotal, false), 100.0);
 
-    booking.markAsMissed();
-    EXPECT_DOUBLE_EQ(booking.calculatePenalty(originalTotal), 80.0);
+    EXPECT_DOUBLE_EQ(BookingCalculation::calculatePenalty(originalTotal, true), 80.0);
 }

@@ -4,20 +4,21 @@
 #include <memory>
 #include <string>
 #include "../Application/InventoryService.h"
+#include "../Domain/ProductRepository.h"
 
 class InventoryManager {
 private:
     std::unique_ptr<InventoryService> inventoryService_;
 
 public:
-    explicit InventoryManager(const std::string& productsFilePath = "pharmacy_products.txt");
+    explicit InventoryManager(IProductRepository& productRepository);
 
     void run();
 
 private:
     void viewProducts();
     void createProduct();
-    
+
     std::string getUserInput(const std::string& prompt);
     void displayMessage(const std::string& msg);
     void displayError(const std::string& error);

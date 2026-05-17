@@ -3,8 +3,8 @@
 #include <iostream>
 #include <iomanip>
 
-InventoryManager::InventoryManager(const std::string& productsFilePath) {
-    inventoryService_ = std::make_unique<InventoryService>(productsFilePath);
+InventoryManager::InventoryManager(IProductRepository& productRepository) {
+    inventoryService_ = std::make_unique<InventoryService>(productRepository);
 }
 
 void InventoryManager::run() {
@@ -19,10 +19,10 @@ void InventoryManager::run() {
 
         std::string input;
         std::getline(std::cin, input);
-        
+
         try {
             int choice = std::stoi(input);
-            
+
             switch (choice) {
                 case 1:
                     viewProducts();
@@ -44,13 +44,13 @@ void InventoryManager::run() {
 
 void InventoryManager::viewProducts() {
     std::cout << "\n--- Inventory Status ---" << std::endl;
-    std::cout << std::setw(20) << "Product Name" 
+    std::cout << std::setw(20) << "Product Name"
               << std::setw(15) << "Quantity"
               << std::setw(15) << "Price" << std::endl;
     std::cout << "-------------------------------------------" << std::endl;
 
     const auto& products = inventoryService_->getAllProducts();
-    
+
     if (products.empty()) {
         displayMessage("No products available.");
         return;
@@ -59,7 +59,7 @@ void InventoryManager::viewProducts() {
     for (const auto& product : products) {
         std::cout << std::setw(20) << product.getName()
                   << std::setw(15) << product.getPackCount()
-                  << std::setw(15) << std::fixed << std::setprecision(2) 
+                  << std::setw(15) << std::fixed << std::setprecision(2)
                   << product.getPrice() << std::endl;
     }
 }
@@ -74,10 +74,10 @@ void InventoryManager::createProduct() {
     try {
         int quantity = std::stoi(quantityStr);
         double price = std::stod(priceStr);
-        
+
         inventoryService_->addProduct(name, quantity, price);
 
-        std::cout << "\n Product created successfully!" << std::endl;
+        std::cout << "\nProduct created successfully!" << std::endl;
         std::cout << "Name: " << name << std::endl;
         std::cout << "Quantity: " << quantity << std::endl;
         std::cout << "Price: " << std::fixed << std::setprecision(2) << price << " USD" << std::endl;
@@ -96,9 +96,9 @@ std::string InventoryManager::getUserInput(const std::string& prompt) {
 }
 
 void InventoryManager::displayMessage(const std::string& msg) {
-    std::cout << "\nsuccess: " << msg << std::endl;
+    std::cout << "\nSuccess: " << msg << std::endl;
 }
 
 void InventoryManager::displayError(const std::string& error) {
-    std::cout << "\n Error: " << error << std::endl;
+    std::cout << "\nError: " << error << std::endl;
 }

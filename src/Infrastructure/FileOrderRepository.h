@@ -3,23 +3,23 @@
 
 #include <string>
 #include <unordered_map>
+#include <memory>
 
 #include "../Domain/OrderRepository.h"
+#include "OrderSerializer.h"
+#include "OrderDeserializer.h"
 
 class FileOrderRepository : public IOrderRepository {
 private:
     std::string filePath_;
     std::unordered_map<std::string, Order> cache_;
+    std::unique_ptr<OrderSerializer> serializer_;
+    std::unique_ptr<OrderDeserializer> deserializer_;
 
 public:
-    explicit FileOrderRepository(const std::string& filePath)
-        : filePath_(filePath) {
-        loadFromFile();
-    }
+    explicit FileOrderRepository(const std::string& filePath);
 
-    ~FileOrderRepository() {
-        saveToFile();
-    }
+    ~FileOrderRepository();
 
     void save(const Order& order) override;
 
@@ -31,8 +31,8 @@ public:
 
     void deleteById(const std::string& id) override;
 
+private:
     void saveToFile();
-    
     void loadFromFile();
 };
 

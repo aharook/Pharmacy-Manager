@@ -1,8 +1,9 @@
 #include "BookingService.h"
 #include <stdexcept>
 
-BookingService::BookingService(FileOrderRepository& orderRepository)
-    : orderRepository_(orderRepository) {}
+BookingService::BookingService(IOrderRepository& orderRepository)
+    : orderRepository_(orderRepository) {
+}
 
 void BookingService::createBooking(const std::string& orderId) {
     if (orderId.empty()) {
@@ -26,7 +27,7 @@ BookingResult BookingService::markBookingAsMissed(const std::string& orderId) {
         if (booking.getOrderId() == orderId) {
             booking.markAsMissed();
             const Order& order = orderRepository_.getById(orderId);
-            
+
             BookingResult result;
             result.penaltyAmount = booking.calculatePenalty(order.getTotal());
             return result;

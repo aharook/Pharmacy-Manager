@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Application/InventoryService.h"
+#include "Infrastructure/FileProductRepository.h"
 #include "Domain/Product.h"
 
 namespace {
@@ -27,14 +28,17 @@ TEST(InventoryServiceEdgeTests, AddProductZeroQuantityAndPrice) {
     const std::string productsFile = tempFilePath("products_zero");
     removeFile(productsFile);
 
-    {InventoryService service(productsFile);
-    EXPECT_NO_THROW(service.addProduct("FreeSample", 0, 0.0));
+    {
+        FileProductRepository repo(productsFile);
+        InventoryService service(repo);
+        EXPECT_NO_THROW(service.addProduct("FreeSample", 0, 0.0));
 
-    const auto& products = service.getAllProducts();
-    ASSERT_EQ(products.size(), 1u);
-    EXPECT_EQ(products[0].getName(), "FreeSample");
-    EXPECT_EQ(products[0].getPackCount(), 0);
-    EXPECT_DOUBLE_EQ(products[0].getPrice(), 0.0);}
+        const auto& products = service.getAllProducts();
+        ASSERT_EQ(products.size(), 1u);
+        EXPECT_EQ(products[0].getName(), "FreeSample");
+        EXPECT_EQ(products[0].getPackCount(), 0);
+        EXPECT_DOUBLE_EQ(products[0].getPrice(), 0.0);
+    }
 
     removeFile(productsFile);
 }

@@ -4,22 +4,23 @@
 #include <memory>
 #include <string>
 #include "../Application/OrderService.h"
-#include "../Infrastructure/FileOrderRepository.h"
+#include "../Domain/OrderRepository.h"
+#include "../Domain/ProductRepository.h"
 
 class OrderManager {
 private:
     std::unique_ptr<OrderService> orderService_;
 
 public:
-    OrderManager(FileOrderRepository& orderRepository, 
-                 const std::string& productsFilePath = "pharmacy_products.txt");
+    OrderManager(IOrderRepository& orderRepository, IProductRepository& productRepository);
 
     void run();
 
 private:
     void createOrder();
     void viewOrders();
-    
+    void markOrderAsReceived();
+
     int getUserChoice();
     std::string getUserInput(const std::string& prompt);
     void displayMessage(const std::string& msg);

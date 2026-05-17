@@ -2,10 +2,9 @@
 
 #include <iostream>
 
-PharmacyConsole::PharmacyConsole(FileOrderRepository& orderRepository, const std::string& productsFilePath) 
-{
-    inventoryManager_ = std::make_unique<InventoryManager>(productsFilePath);
-    orderManager_ = std::make_unique<OrderManager>(orderRepository, productsFilePath);
+PharmacyConsole::PharmacyConsole(IOrderRepository& orderRepository, IProductRepository& productRepository) {
+    inventoryManager_ = std::make_unique<InventoryManager>(productRepository);
+    orderManager_ = std::make_unique<OrderManager>(orderRepository, productRepository);
     bookingManager_ = std::make_unique<BookingManager>(orderRepository);
 }
 
@@ -13,7 +12,7 @@ void PharmacyConsole::run() {
     bool isRunning = true;
 
     while (isRunning) {
-        std::cout << "\n========== PHARMACY MANAGER  ==========" << std::endl;
+        std::cout << "\n========== PHARMACY MANAGER ==========" << std::endl;
         std::cout << "1. Inventory Management" << std::endl;
         std::cout << "2. Orders" << std::endl;
         std::cout << "3. Bookings" << std::endl;
@@ -34,7 +33,7 @@ void PharmacyConsole::run() {
                 break;
             case 0:
                 isRunning = false;
-                displayMessage("\nThank you for using Pharmacy Manager!");
+                displayMessage("Thank you for using Pharmacy Manager!");
                 break;
             default:
                 displayError("Invalid choice.");
@@ -52,12 +51,10 @@ int PharmacyConsole::getUserChoice() {
     }
 }
 
-void PharmacyConsole::displayMessage(const std::string& msg) 
-{
-    std::cout << "\nsuccess: " << msg << std::endl;
+void PharmacyConsole::displayMessage(const std::string& msg) {
+    std::cout << "\nSuccess: " << msg << std::endl;
 }
 
-void PharmacyConsole::displayError(const std::string& error) 
-{
-    std::cout << "\n Error: " << error << std::endl;
+void PharmacyConsole::displayError(const std::string& error) {
+    std::cout << "\nError: " << error << std::endl;
 }

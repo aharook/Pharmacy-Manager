@@ -12,12 +12,9 @@ private:
 public:
     Booking() : orderId_(""), isMissed_(false) {}
 
-    Booking(const std::string& orderId, bool isMissed = false)
-        : orderId_(orderId), isMissed_(isMissed) {}
+    Booking(const std::string& orderId, bool isMissed = false): orderId_(orderId), isMissed_(isMissed) {}
 
-    const std::string& getOrderId() const {
-        return orderId_;
-    }
+    const std::string& getOrderId() const {return orderId_;}
 
     bool isMissed() const {
         return isMissed_;

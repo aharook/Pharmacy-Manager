@@ -1,15 +1,11 @@
-#ifndef DOMAIN_SALE_FACTORY_H
-#define DOMAIN_SALE_FACTORY_H
+#ifndef CALCULATIONS_SALE_FACTORY_H
+#define CALCULATIONS_SALE_FACTORY_H
 
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include "OrderItem.h"
-
-enum class SaleType {
-    DIRECT,   
-    BOOKING  
-};
+#include "../Domain/Order.h"
+#include "../Domain/OrderItem.h"
 
 class Sale {
 public:

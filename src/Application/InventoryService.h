@@ -5,14 +5,14 @@
 #include <string>
 #include <vector>
 #include "../Domain/Product.h"
-#include "../Infrastructure/FileProductRepository.h"
+#include "../Domain/ProductRepository.h"
 
 class InventoryService {
 private:
-    std::unique_ptr<FileProductRepository> productRepository_;
+    IProductRepository& productRepository_;
 
 public:
-    explicit InventoryService(const std::string& productsFilePath = "pharmacy_products.txt");
+    explicit InventoryService(IProductRepository& productRepository);
 
     const std::vector<Product>& getAllProducts() const;
 

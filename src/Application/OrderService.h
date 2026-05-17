@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 #include "../Domain/Order.h"
-#include "../Domain/SaleFactory.h"
-#include "../Infrastructure/FileOrderRepository.h"
-#include "../Infrastructure/FileProductRepository.h"
+#include "../Domain/OrderRepository.h"
+#include "../Domain/ProductRepository.h"
+#include "../Calculations/SaleFactory.h"
 
 struct OrderResult {
     std::string orderId;
@@ -16,16 +16,17 @@ struct OrderResult {
 
 class OrderService {
 private:
-    FileOrderRepository& orderRepository_;
-    std::unique_ptr<FileProductRepository> productRepository_;
+    IOrderRepository& orderRepository_;
+    IProductRepository& productRepository_;
 
 public:
-    OrderService(FileOrderRepository& orderRepository, 
-                 const std::string& productsFilePath = "pharmacy_products.txt");
+    OrderService(IOrderRepository& orderRepository, IProductRepository& productRepository);
 
     OrderResult createOrder(const std::string& productName, int quantity, int saleType);
 
     std::vector<Order> getAllOrders() const;
+
+    void markOrderAsReceivedAndDelete(const std::string& orderId);
 };
 
 #endif

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <iomanip>
 
-BookingManager::BookingManager(FileOrderRepository& orderRepository) {
+BookingManager::BookingManager(IOrderRepository& orderRepository) {
     bookingService_ = std::make_unique<BookingService>(orderRepository);
 }
 
@@ -58,7 +58,7 @@ void BookingManager::createBooking() {
 
 void BookingManager::viewBookings() {
     const auto& bookings = bookingService_->getAllBookings();
-    
+
     if (bookings.empty()) {
         displayMessage("No bookings.");
         return;
@@ -79,7 +79,7 @@ void BookingManager::markBookingAsMissed() {
 
     try {
         BookingResult result = bookingService_->markBookingAsMissed(orderId);
-        std::cout << "\n Booking marked as missed!" << std::endl;
+        std::cout << "\nBooking marked as missed!" << std::endl;
         std::cout << "Penalty amount (20%): " << std::fixed << std::setprecision(2) << result.penaltyAmount << " USD" << std::endl;
     } catch (const std::invalid_argument& e) {
         displayError(e.what());
@@ -108,9 +108,9 @@ std::string BookingManager::getUserInput(const std::string& prompt) {
 }
 
 void BookingManager::displayMessage(const std::string& msg) {
-    std::cout << "\nsuccess: " << msg << std::endl;
+    std::cout << "\nSuccess: " << msg << std::endl;
 }
 
 void BookingManager::displayError(const std::string& error) {
-    std::cout << "\n Error: " << error << std::endl;
+    std::cout << "\nError: " << error << std::endl;
 }

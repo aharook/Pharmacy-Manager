@@ -4,14 +4,14 @@
 #include <memory>
 #include <string>
 #include "../Application/BookingService.h"
-#include "../Infrastructure/FileOrderRepository.h"
+#include "../Domain/OrderRepository.h"
 
 class BookingManager {
 private:
     std::unique_ptr<BookingService> bookingService_;
 
 public:
-    explicit BookingManager(FileOrderRepository& orderRepository);
+    explicit BookingManager(IOrderRepository& orderRepository);
 
     void run();
 
@@ -19,7 +19,7 @@ private:
     void createBooking();
     void viewBookings();
     void markBookingAsMissed();
-    
+
     int getUserChoice();
     std::string getUserInput(const std::string& prompt);
     void displayMessage(const std::string& msg);

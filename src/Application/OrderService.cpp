@@ -1,9 +1,9 @@
 #include "OrderService.h"
 #include <stdexcept>
+#include <algorithm>
 
-OrderService::OrderService(FileOrderRepository& orderRepository, const std::string& productsFilePath)
-    : orderRepository_(orderRepository) {
-    productRepository_ = std::make_unique<FileProductRepository>(productsFilePath);
+OrderService::OrderService(IOrderRepository& orderRepository, IProductRepository& productRepository)
+    : orderRepository_(orderRepository), productRepository_(productRepository) {
 }
 
 OrderResult OrderService::createOrder(const std::string& productName, int quantity, int saleType) {
@@ -19,7 +19,7 @@ OrderResult OrderService::createOrder(const std::string& productName, int quanti
         throw std::invalid_argument("Invalid sale type (use 1 for Direct, 2 for Booking)!");
     }
 
-    Product* selectedProduct = productRepository_->findByName(productName);
+    Product* selectedProduct = productRepository_.findByName(productName);
     if (!selectedProduct) {
         throw std::runtime_error("Product not found!");
     }
@@ -29,16 +29,32 @@ OrderResult OrderService::createOrder(const std::string& productName, int quanti
     }
 
     SaleType saletype_enum = (saleType == 2) ? SaleType::BOOKING : SaleType::DIRECT;
-    std::string orderId = "ORD" + std::to_string(orderRepository_.getAll().size() + 1);
-    
+
+    auto allOrders = orderRepository_.getAll();
+    int nextId = 1;
+    for (const auto& order : allOrders) {
+        std::string orderId = order.getId();
+        if (orderId.substr(0, 3) == "ORD") {
+            try {
+                int id = std::stoi(orderId.substr(3));
+                nextId = std::max(nextId, id + 1);
+            } catch (...) {
+            }
+        }
+    }
+    std::string orderId = "ORD" + std::to_string(nextId);
+
     Order order(orderId, saletype_enum);
     order.addItem(OrderItem(*selectedProduct, quantity));
-    order.calculateTotal();
+
+    Sale* sale = SaleFactory::createSale(saletype_enum);
+    order.setTotal(sale->calculate(order.getItems()));
+    delete sale;
 
     orderRepository_.save(order);
 
     selectedProduct->decreasePackCount(quantity);
-    productRepository_->save(*selectedProduct);
+    productRepository_.save(*selectedProduct);
 
     OrderResult result;
     result.orderId = orderId;
@@ -48,4 +64,15 @@ OrderResult OrderService::createOrder(const std::string& productName, int quanti
 
 std::vector<Order> OrderService::getAllOrders() const {
     return orderRepository_.getAll();
+}
+
+void OrderService::markOrderAsReceivedAndDelete(const std::string& orderId) {
+    try {
+        const Order& order = orderRepository_.getById(orderId);
+        Order receivedOrder = order;
+        receivedOrder.markAsReceived();
+        orderRepository_.deleteById(orderId);
+    } catch (const std::runtime_error& e) {
+        throw std::runtime_error("Cannot mark order as received: " + std::string(e.what()));
+    }
 }
